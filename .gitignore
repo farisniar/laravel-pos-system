@@ -1,0 +1,98 @@
+# Laravel specific
+/node_modules
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# Composer
+composer.phar
+/vendor/
+composer.lock
+
+# Package managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+/storage/logs/*
+!/storage/logs/.gitignore
+
+# Cache and temporary files
+/bootstrap/cache/*
+!/bootstrap/cache/.gitignore
+/storage/framework/cache/*
+!/storage/framework/cache/.gitignore
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitignore
+/storage/framework/views/*
+!/storage/framework/views/.gitignore
+/storage/app/public/*
+!/storage/app/public/.gitignore
+
+# Build files
+/public/mix-manifest.json
+/public/js/app.js
+/public/css/app.css
+/public/build/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Testing
+/coverage/
+.phpunit.result.cache
+
+# Documentation
+/docs/_build/
+
+# Custom files for this project
+Documentation.zip
+version.txt
+
+# Uploaded files (customize based on your needs)
+/public/store_files/*
+/public/import/*
+!/public/store_files/.gitkeep
+!/public/import/.gitkeep
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Compiled assets
+/public/assets_setup/compiled/
