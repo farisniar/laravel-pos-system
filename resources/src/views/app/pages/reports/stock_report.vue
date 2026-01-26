@@ -40,20 +40,18 @@
       </div>
 
        <div slot="table-actions" class="mt-2 mb-3">
-        
+
           <b-button @click="stock_report_PDF()" size="sm" variant="outline-success ripple m-1">
             <i class="i-File-Copy"></i> PDF
           </b-button>
-           <vue-excel-xlsx
-              class="btn btn-sm btn-outline-danger ripple m-1"
-              :data="reports"
-              :columns="columns"
-              :file-name="'stock_report'"
-              :file-type="'xlsx'"
-              :sheet-name="'stock_report'"
-              >
-              <i class="i-File-Excel"></i> EXCEL
-          </vue-excel-xlsx>
+
+          <b-button
+            size="sm"
+            variant="btn btn-sm btn-outline-danger ripple m-1"
+            @click="exportExcel"
+          >
+            <i class="i-File-Excel"></i> EXCEL
+          </b-button>
         </div>
 
         <template slot="table-row" slot-scope="props">
@@ -109,7 +107,7 @@ export default {
           thClass: "text-left"
         },
         {
-          label: this.$t("Name_product"),
+          label:this.$t("Name_product"),
           field: "name",
           tdClass: "text-left",
           thClass: "text-left",
@@ -122,7 +120,6 @@ export default {
           thClass: "text-left",
           sortable: false
         },
-      
         {
           label: this.$t("Current_stock"),
           field: "quantity",
@@ -153,7 +150,7 @@ export default {
         pdf.addFont(fontPath, "Vazirmatn", "bold");
       } catch(e) {}
       pdf.setFont("Vazirmatn", "normal");
-      
+
       const headers = [
         self.$t("ProductCode"),
         self.$t("ProductName"),
@@ -170,7 +167,7 @@ export default {
 
       // Calculate totals
       let totalGrandTotal = self.reports.reduce((sum, report) => sum + parseFloat(report.quantity || 0), 0);
-      
+
       const footer = [[
         self.$t("Total"),
         '',
@@ -323,6 +320,10 @@ export default {
             this.isLoading = false;
           }, 500);
         });
+    },
+
+    exportExcel() {
+      window.open('/report/warehouse/excel', '_blank')
     }
   }, //end Methods
 

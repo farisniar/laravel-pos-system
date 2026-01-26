@@ -2598,6 +2598,9 @@ class ReportController extends BaseController
                 $item['code'] = $product->code;
                 $item['name'] = $product->name;
                 $item['category'] = $product['category']->name;
+                $item['brand'] = $product->brand ? $product->brand->name : 'N/D';
+                $item['unit'] = optional($product->unit)->ShortName;
+                $item['min_price'] = $product->min_price;
 
                 $current_stock = product_warehouse::where('product_id', $product->id)
                     ->where('deleted_at', '=', null)
@@ -2619,6 +2622,9 @@ class ReportController extends BaseController
                 $item['code'] = $product->code;
                 $item['name'] = $product->name;
                 $item['category'] = $product['category']->name;
+                $item['brand'] = $product->brand ? $product->brand->name : 'N/D';
+                $item['unit'] = optional($product->unit)->ShortName;
+                $item['min_price'] = $product->min_price;
                 $item['quantity'] = 0;
 
                 $data[] = $item;
@@ -6187,7 +6193,7 @@ class ReportController extends BaseController
         $discountPerUnitExpr = "
         CASE
             WHEN sd.discount IS NULL THEN 0
-            WHEN (sd.discount_method IN ('fixed','amount','value') OR sd.discount_method = 2) 
+            WHEN (sd.discount_method IN ('fixed','amount','value') OR sd.discount_method = 2)
             THEN COALESCE(sd.discount,0)
             ELSE COALESCE(sd.price,0) * COALESCE(sd.discount,0) / 100
         END
@@ -6197,7 +6203,7 @@ class ReportController extends BaseController
         $taxPerUnitExpr = "($unitAfterDiscExpr) * ($rateExpr)";
         $basePerUnitExpr = "
         CASE
-            WHEN (sd.tax_method IN ('2','Inclusive')) 
+            WHEN (sd.tax_method IN ('2','Inclusive'))
             THEN GREATEST(($unitAfterDiscExpr) - ($taxPerUnitExpr), 0)
             ELSE ($unitAfterDiscExpr)
         END
@@ -6246,9 +6252,9 @@ class ReportController extends BaseController
             ->selectRaw('COALESCE(u.username,"—") as user_name')
             ->selectRaw("COALESCE(SUM($taxableBaseExpr),0) as taxable_base")
             ->selectRaw("COALESCE(SUM($taxAmountExpr),0)   as tax_collected")
-            ->selectRaw("CASE WHEN SUM($taxableBaseExpr)=0 
-                    THEN NULL 
-                    ELSE (SUM($taxAmountExpr)/SUM($taxableBaseExpr))*100 
+            ->selectRaw("CASE WHEN SUM($taxableBaseExpr)=0
+                    THEN NULL
+                    ELSE (SUM($taxAmountExpr)/SUM($taxableBaseExpr))*100
                 END as effective_rate");
 
         $totalRows = DB::query()->fromSub($tableBase, 'x')->count();

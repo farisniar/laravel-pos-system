@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Store\CheckoutController;
 use App\Http\Controllers\Api\Store\MessageController;
 use App\Http\Controllers\Api\Store\MyOrdersApiController;
 use App\Http\Controllers\Api\Store\NewsletterController;
+use App\Http\Controllers\CustomReportController;
 use App\Http\Controllers\QuickBooksController;
 use App\Http\Controllers\StoreAuthController;
 use App\Http\Controllers\StoreFrontController;
@@ -113,6 +114,11 @@ if ($installed === true) {
                 ->middleware('auth:store')->name('store.logout');
 
         });
+
+        Route::get('/report/warehouse/excel', [CustomReportController::class, 'warehouseExcel']);
+        Route::get('/report/invoice/excel/{id}', [CustomReportController::class, 'invoiceExcel']);
+        Route::get('/report/product/excel', [CustomReportController::class, 'productExcel']);
+        Route::get('/report/sales/excel', [CustomReportController::class, 'salesExcel']);
     });
 
 } else {

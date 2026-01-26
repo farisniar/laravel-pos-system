@@ -35,16 +35,12 @@
             <i class="i-File-Copy"></i> PDF
           </b-button>
 
-          <vue-excel-xlsx
-            class="btn btn-sm btn-outline-danger ripple m-1"
-            :data="products"
-            :columns="excelColumns"
-            :file-name="'products'"
-            :file-type="'xlsx'"
-            :sheet-name="'products'"
+          <b-button
+            variant="btn btn-sm btn-outline-danger ripple m-1"
+            @click="exportExcel"
           >
             <i class="i-File-Excel"></i> EXCEL
-          </vue-excel-xlsx>
+          </b-button>
 
           <router-link
             v-if="currentUserPermissions && currentUserPermissions.includes('product_import')"
@@ -126,7 +122,7 @@
             v-else-if="props.column.field === 'cost'"
             :class="{'pre': props.row.type === 'Variable'}"
           >
-            {{ props.row.type === 'Variable' 
+            {{ props.row.type === 'Variable'
               ? formatPriceWithSymbol(currentUser && currentUser.currency ? currentUser.currency : '', firstLine(props.row.cost), 2)
               : formatPriceWithSymbol(currentUser && currentUser.currency ? currentUser.currency : '', props.row.cost, 2) }}
           </span>
@@ -134,7 +130,7 @@
             v-else-if="props.column.field === 'price'"
             :class="{'pre': props.row.type === 'Variable'}"
           >
-            {{ props.row.type === 'Variable' 
+            {{ props.row.type === 'Variable'
               ? formatPriceWithSymbol(currentUser && currentUser.currency ? currentUser.currency : '', firstLine(props.row.price), 2)
               : formatPriceWithSymbol(currentUser && currentUser.currency ? currentUser.currency : '', props.row.price, 2) }}
           </span>
@@ -315,6 +311,10 @@ export default {
     }
   },
   methods: {
+    exportExcel() {
+      window.open('/report/product/excel', '_blank')
+    },
+
     can(p) { return this.currentUserPermissions && this.currentUserPermissions.includes(p); },
 
     // Return first line of a possibly multi-line string
@@ -429,7 +429,7 @@ export default {
           rtl ? pdf.text(title, pageW - marginX, 38, { align: 'right' })
               : pdf.text(title, marginX, 38);
 
-          
+
 
           // Reset text color
           pdf.setTextColor(33);

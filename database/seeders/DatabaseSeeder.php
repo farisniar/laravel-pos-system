@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             PermissionRoleSeeder::class,
             Warehouse::class,
             StoreSettingSeeder::class,
+            TranslationSeeder::class
         ]);
 
     }
