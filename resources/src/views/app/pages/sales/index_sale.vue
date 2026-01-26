@@ -16,7 +16,7 @@
         placeholder: $t('Search_this_table'),
         enabled: true,
       }"
-        :select-options="{ 
+        :select-options="{
           enabled: true ,
           clearSelectionText: '',
         }"
@@ -40,16 +40,12 @@
           <b-button @click="Sales_PDF()" size="sm" variant="outline-success ripple m-1">
             <i class="i-File-Copy"></i> PDF
           </b-button>
-          <vue-excel-xlsx
-              class="btn btn-sm btn-outline-danger ripple m-1"
-              :data="sales"
-              :columns="columns"
-              :file-name="'sales'"
-              :file-type="'xlsx'"
-              :sheet-name="'sales'"
-              >
-              <i class="i-File-Excel"></i> EXCEL
-          </vue-excel-xlsx>
+          <b-button
+            variant="btn btn-sm btn-outline-danger ripple m-1"
+            @click="exportExcel"
+          >
+            <i class="i-File-Excel"></i> EXCEL
+          </b-button>
           <router-link
             class="btn-sm btn btn-primary ripple btn-icon m-1"
             v-if="currentUserPermissions && currentUserPermissions.includes('Sales_add')"
@@ -86,7 +82,7 @@
                   </b-dropdown-item>
                 </b-navbar-nav>
 
-                 <b-dropdown-item 
+                 <b-dropdown-item
                   title="Edit"
                   v-if="currentUserPermissions.includes('Sales_edit') && props.row.sale_has_return == 'no'"
                   :to="'/app/sales/edit/'+props.row.id"
@@ -1389,7 +1385,7 @@ export default {
       paymentProcessing: false,
       Submit_Processing_shipment:false,
 
-      
+
 
       isLoading: true,
       serverParams: {
@@ -1661,8 +1657,11 @@ export default {
     }
   },
   methods: {
+    exportExcel() {
+      window.open('/report/sales/excel', '_blank')
+    },
 
-  
+
     //------------------------------ Print -------------------------\\
     print_it() {
       var divContents = document.getElementById("invoice-POS").innerHTML;
@@ -1674,7 +1673,7 @@ export default {
       a.document.write(divContents);
       a.document.write("</body></html>");
       a.document.close();
-      
+
       setTimeout(() => {
          a.print();
       }, 1000);
@@ -1732,7 +1731,7 @@ export default {
       this.Get_Sales(this.serverParams.page);
     },
 
-    
+
     onSearch(value) {
       this.search = value.searchTerm;
       this.Get_Sales(this.serverParams.page);
@@ -1750,7 +1749,7 @@ export default {
           this.$t("Warning")
         );
         this.payment.montant = 0;
-      } 
+      }
       else if (this.payment.montant > this.due) {
         this.makeToast(
           "warning",
@@ -1766,7 +1765,7 @@ export default {
     Verified_Received_Amount() {
       if (isNaN(this.payment.received_amount)) {
         this.payment.received_amount = 0;
-      } 
+      }
     },
 
 
@@ -1899,36 +1898,36 @@ export default {
     },
 
     //----------------------------------- Sales PDF ------------------------------\\
-    
+
     Sales_PDF() {
       const pdf = new jsPDF('p','pt');
       const fontPath = '/fonts/Vazirmatn-Bold.ttf';
-      try { 
-        pdf.addFont(fontPath,'Vazirmatn','normal'); 
-        pdf.addFont(fontPath,'Vazirmatn','bold'); 
+      try {
+        pdf.addFont(fontPath,'Vazirmatn','normal');
+        pdf.addFont(fontPath,'Vazirmatn','bold');
       } catch(e){}
       pdf.setFont('Vazirmatn','normal');
 
-      const headers = [ 
-        this.$t('Reference'), 
-        this.$t('Customer'), 
-        this.$t('warehouse'), 
-        this.$t('Status'), 
-        this.$t('Total'), 
-        this.$t('Paid'), 
-        this.$t('Due'), 
-        this.$t('PaymentStatus') 
+      const headers = [
+        this.$t('Reference'),
+        this.$t('Customer'),
+        this.$t('warehouse'),
+        this.$t('Status'),
+        this.$t('Total'),
+        this.$t('Paid'),
+        this.$t('Due'),
+        this.$t('PaymentStatus')
       ];
-      
-      const body = (this.sales||[]).map(r => [ 
-        r.Ref, 
-        r.client_name, 
-        r.warehouse_name, 
-        r.statut, 
-        r.GrandTotal, 
-        r.paid_amount, 
-        r.due, 
-        r.payment_status 
+
+      const body = (this.sales||[]).map(r => [
+        r.Ref,
+        r.client_name,
+        r.warehouse_name,
+        r.statut,
+        r.GrandTotal,
+        r.paid_amount,
+        r.due,
+        r.payment_status
       ]);
 
       const totals = (this.sales||[]).reduce((a,r) => ({
@@ -1936,52 +1935,52 @@ export default {
         p: a.p + parseFloat(r.paid_amount||0),
         d: a.d + parseFloat(r.due||0)
       }), {t:0,p:0,d:0});
-      
-      const foot = [[ 
-        this.$t('Total'), 
-        '', 
-        '', 
-        '', 
-        totals.t.toFixed(2), 
-        totals.p.toFixed(2), 
-        totals.d.toFixed(2), 
-        '' 
+
+      const foot = [[
+        this.$t('Total'),
+        '',
+        '',
+        '',
+        totals.t.toFixed(2),
+        totals.p.toFixed(2),
+        totals.d.toFixed(2),
+        ''
       ]];
 
       const marginX = 40;
-      const rtl = (this.$i18n && ['ar','fa','ur','he'].includes(this.$i18n.locale)) || 
+      const rtl = (this.$i18n && ['ar','fa','ur','he'].includes(this.$i18n.locale)) ||
                   (typeof document!=='undefined' && document.documentElement.dir==='rtl');
 
       autoTable(pdf, {
-        head: [headers], 
-        body, 
-        foot: foot, 
-        startY: 110, 
-        theme: 'striped', 
+        head: [headers],
+        body,
+        foot: foot,
+        startY: 110,
+        theme: 'striped',
         margin: { left: marginX, right: marginX },
-        styles: { 
-          font: 'Vazirmatn', 
-          fontSize: 9, 
-          cellPadding: 4, 
-          halign: rtl ? 'right' : 'left', 
-          textColor: 33 
+        styles: {
+          font: 'Vazirmatn',
+          fontSize: 9,
+          cellPadding: 4,
+          halign: rtl ? 'right' : 'left',
+          textColor: 33
         },
-        headStyles: { 
-          font: 'Vazirmatn', 
-          fontStyle: 'bold', 
-          fillColor: [63,81,181], 
-          textColor: 255 
+        headStyles: {
+          font: 'Vazirmatn',
+          fontStyle: 'bold',
+          fillColor: [63,81,181],
+          textColor: 255
         },
-        alternateRowStyles: { 
-          fillColor: [245,247,250] 
+        alternateRowStyles: {
+          fillColor: [245,247,250]
         },
-        footStyles: { 
-          font: 'Vazirmatn', 
-          fontStyle: 'bold', 
-          fillColor: [63,81,181], 
-          textColor: 255 
+        footStyles: {
+          font: 'Vazirmatn',
+          fontStyle: 'bold',
+          fillColor: [63,81,181],
+          textColor: 255
         },
-        columnStyles: { 
+        columnStyles: {
           0: { halign: rtl ? 'right' : 'left' },  // Reference
           1: { halign: rtl ? 'right' : 'left' },  // Customer
           2: { halign: rtl ? 'right' : 'left' },  // Warehouse
@@ -1994,26 +1993,26 @@ export default {
         didDrawPage: (d) => {
           const pageW = pdf.internal.pageSize.getWidth();
           const pageH = pdf.internal.pageSize.getHeight();
-          
+
           // Header banner
           pdf.setFillColor(63,81,181);
           pdf.rect(0, 0, pageW, 60, 'F');
-          
+
           // Title
           pdf.setTextColor(255);
           pdf.setFont('Vazirmatn', 'bold');
           pdf.setFontSize(16);
           const title = this.$t('ListSales') || 'Sales List';
-          rtl ? pdf.text(title, pageW - marginX, 38, { align: 'right' }) 
+          rtl ? pdf.text(title, pageW - marginX, 38, { align: 'right' })
               : pdf.text(title, marginX, 38);
-          
+
           // Reset text color
           pdf.setTextColor(33);
-          
+
           // Footer page numbers
           pdf.setFontSize(8);
           const pn = `${d.pageNumber} / ${pdf.internal.getNumberOfPages()}`;
-          rtl ? pdf.text(pn, marginX, pageH - 14, { align: 'left' }) 
+          rtl ? pdf.text(pn, marginX, pageH - 14, { align: 'left' })
               : pdf.text(pn, pageW - marginX, pageH - 14, { align: 'right' });
         }
       });
@@ -2199,7 +2198,7 @@ export default {
 
           // Open the WhatsApp URL in a new window
           window.open(whatsappUrl, '_blank');
-          
+
         })
         .catch(error => {
           // Complete the animation of the  progress bar.
@@ -2213,7 +2212,7 @@ export default {
       // Start the progress bar.
       NProgress.start();
       NProgress.set(0.1);
-     
+
       axios
         .get("payment_sale_pdf/" + id, {
           responseType: "blob", // important
@@ -2337,7 +2336,7 @@ export default {
       axios
         .post("payment_sale_send_email", {
           id: id,
-         
+
         })
         .then(response => {
           // Complete the animation of the  progress bar.
@@ -2465,7 +2464,7 @@ export default {
         NProgress.done();
         this.$bvModal.show("Add_Payment");
       }, 1000);
-     
+
     },
     //-------------------------------Show All Payment with Sale ---------------------\\
     Show_Payments(id, sale) {
@@ -2519,7 +2518,7 @@ export default {
       this.paymentProcessing = true;
       NProgress.start();
       NProgress.set(0.1);
-      
+
         axios
           .put("payment_sale/" + this.payment.id, {
             sale_id: this.sale.id,
@@ -2690,7 +2689,7 @@ export default {
     Download_Document(doc) {
       NProgress.start();
       NProgress.set(0.1);
-      
+
       axios
         .get("sales/documents/" + doc.id + "/download", {
           responseType: "blob"
@@ -2765,7 +2764,7 @@ export default {
             })
             .catch(error => {
               NProgress.done();
-                
+
             });
     },
 

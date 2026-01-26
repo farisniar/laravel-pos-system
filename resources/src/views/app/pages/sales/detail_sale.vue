@@ -64,6 +64,12 @@
                 <i class="i-Billing"></i>
                 <span>{{$t('print')}}</span>
               </button>
+              <b-button
+                variant="action-btn btn-danger"
+                @click="exportExcel"
+              >
+                <i class="i-File-Excel"></i> EXCEL
+              </b-button>
             </div>
           </div>
         </b-col>
@@ -173,9 +179,9 @@
           <!-- Products Cards - Mobile/Tablet View -->
           <div class="invoice-products-mobile">
             <div class="invoice-products-mobile-header">PRODUCTS</div>
-            <div 
-              v-for="(detail, index) in details" 
-              :key="index" 
+            <div
+              v-for="(detail, index) in details"
+              :key="index"
               class="invoice-product-card"
             >
               <div class="invoice-product-card-header">
@@ -352,7 +358,9 @@ export default {
   },
 
   methods: {
-   
+    exportExcel() {
+      window.open('/report/invoice/excel/' + this.$route.params.id, '_blank')
+    },
 
     //----------------------------------- Invoice Sale PDF  -------------------------\\
     Sale_PDF() {
@@ -360,7 +368,7 @@ export default {
       NProgress.start();
       NProgress.set(0.1);
       let id = this.$route.params.id;
-     
+
        axios
         .get(`sale_pdf/${id}`, {
           responseType: "blob", // important
@@ -470,7 +478,7 @@ export default {
       let printWindow = null;
       let printTriggered = false;
       let closeTimeout = null;
-      
+
       axios
         .get(`sale_print_html/${id}`)
         .then(response => {
@@ -480,7 +488,7 @@ export default {
             printWindow.document.open();
             printWindow.document.write(response.data);
             printWindow.document.close();
-            
+
             // Function to close the print window
             const closePrintWindow = () => {
               if (closeTimeout) {
@@ -490,28 +498,28 @@ export default {
                 printWindow.close();
               }
             };
-            
+
             // Function to trigger print once
             const triggerPrint = () => {
               if (printTriggered) {
                 return; // Already triggered, don't trigger again
               }
-              
+
               if (printWindow && printWindow.document.readyState === 'complete') {
                 printTriggered = true;
                 try {
                   // Trigger print
                   printWindow.focus();
                   printWindow.print();
-                  
+
                   // Listen for print dialog close (whether user prints or cancels)
                   // afterprint event fires when print dialog closes (modern browsers)
                   const handleAfterPrint = () => {
                     closePrintWindow();
                   };
-                  
+
                   printWindow.addEventListener('afterprint', handleAfterPrint, { once: true });
-                  
+
                   // Also use matchMedia listener as fallback for better browser support
                   if (printWindow.matchMedia) {
                     const mediaQueryList = printWindow.matchMedia('print');
@@ -524,7 +532,7 @@ export default {
                     };
                     mediaQueryList.addListener(handleMediaChange);
                   }
-                  
+
                   // Fallback: close window after reasonable delay if events don't fire
                   // This handles edge cases and older browsers
                   closeTimeout = setTimeout(closePrintWindow, 2000);
@@ -534,7 +542,7 @@ export default {
                 }
               }
             };
-            
+
             // Wait for content to load, then print
             if (printWindow.document.readyState === 'complete') {
               // Content already loaded
@@ -546,7 +554,7 @@ export default {
               };
             }
           }
-          
+
           setTimeout(() => NProgress.done(), 500);
         })
         .catch(error => {
@@ -1425,7 +1433,7 @@ export default {
   .no-print {
     display: block;
   }
-  
+
   .invoice {
     background: white;
     padding: 20px;
@@ -2262,13 +2270,13 @@ export default {
     size: A4;
     margin: 10mm 15mm;
   }
-  
+
   * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
   }
-  
+
   body {
     font-family: 'DejaVu Sans', 'Arial', sans-serif;
     font-size: 9pt;
@@ -2278,12 +2286,12 @@ export default {
     max-width: 100%;
     background: white;
   }
-  
+
   /* Hide everything except the invoice */
   body > *:not(#print_Invoice) {
     display: none !important;
   }
-  
+
   #print_Invoice {
     position: relative;
     width: 100%;
@@ -2292,7 +2300,7 @@ export default {
     background: white;
     display: block !important;
   }
-  
+
   .invoice-print {
     padding: 15px 20px;
     max-width: 100%;
@@ -2300,12 +2308,12 @@ export default {
     background: white;
     color: #1f2937;
   }
-  
+
   /* Hide non-printable elements */
   .no-print {
     display: none !important;
   }
-  
+
   /* Ensure colors print */
   .invoice-logo,
   .invoice-status-badge,
@@ -2317,7 +2325,7 @@ export default {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
-  
+
   /* Prevent page breaks */
   .invoice-header-table,
   .invoice-billto-table,
@@ -2326,7 +2334,7 @@ export default {
   .invoice-summary-table {
     page-break-inside: avoid;
   }
-  
+
   .invoice-box,
   .invoice-summary-table tr {
     page-break-inside: avoid;

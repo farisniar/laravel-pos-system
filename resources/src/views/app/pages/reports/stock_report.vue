@@ -44,16 +44,14 @@
           <b-button @click="stock_report_PDF()" size="sm" variant="outline-success ripple m-1">
             <i class="i-File-Copy"></i> PDF
           </b-button>
-           <vue-excel-xlsx
-              class="btn btn-sm btn-outline-danger ripple m-1"
-              :data="reports"
-              :columns="excel_columns"
-              :file-name="'stock_report'"
-              :file-type="'xlsx'"
-              :sheet-name="'stock_report'"
-              >
-              <i class="i-File-Excel"></i> EXCEL
-          </vue-excel-xlsx>
+
+          <b-button
+            size="sm"
+            variant="btn btn-sm btn-outline-danger ripple m-1"
+            @click="exportExcel"
+          >
+            <i class="i-File-Excel"></i> EXCEL
+          </b-button>
         </div>
 
         <template slot="table-row" slot-scope="props">
@@ -134,79 +132,6 @@ export default {
           tdClass: "text-right",
           thClass: "text-right",
           sortable: false
-        }
-      ];
-    },
-
-    excel_columns() {
-      return [
-        {
-          label: 'ITEM',
-          field: "name",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold",
-          sortable: false
-        },
-        {
-          label: 'MEREK',
-          field: "brand",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold",
-          sortable: false
-        },
-        {
-          label: 'QTY',
-          field: "quantity",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'SATUAN',
-          field: "unit",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'BATCH NO/LOT',
-          field: "",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'EXPIRE',
-          field: "",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'HARGA MODAL',
-          field: "min_price",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'DROP IN',
-          field: "",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'DATE DROP IN',
-          field: "",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'DROP OUT',
-          field: "",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
-        },
-        {
-          label: 'DATE DROP OUT',
-          field: "",
-          tdClass: "text-center text-bold",
-          thClass: "text-center text-bold"
         }
       ];
     }
@@ -395,6 +320,10 @@ export default {
             this.isLoading = false;
           }, 500);
         });
+    },
+
+    exportExcel() {
+      window.open('/report/warehouse/excel', '_blank')
     }
   }, //end Methods
 
